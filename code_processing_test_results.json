@@ -1,0 +1,7 @@
+{
+  "beautification": true,
+  "obfuscation_detection": true,
+  "deobfuscation": true,
+  "syntax_highlighting": true,
+  "export": true
+}

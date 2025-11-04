@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Hunter Test Website - 渗透测试JS分析工具测试页面</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- 外部JS文件测试 -->
+  <script src="js/external-normal.js"></script>
+  <script src="js/external-minified.js"></script>
+  <script src="js/external-obfuscated.js"></script>
+  <script src="js/framework-vue.js"></script>
+  
+  <!-- 内联JS测试 - 包含敏感信息 -->
+  <script>
+    // 测试场景1：API密钥泄露
+    const API_CONFIG = {
+      stripePublicKey: 'pk_test_51HqJ8KLmN9pQrStUvWxYz012345678901234567890AbCdEf',
+      stripeSecretKey: 'FAKE_STRIPE_SECRET_KEY_FOR_TESTING_ONLY', // 高危！（测试密钥）
+      awsAccessKey: 'AKIAIOSFODNN7EXAMPLE',
+      awsSecretKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+      googleMapsKey: 'AIzaSyDXYZ1234567890abcdefghijklmnopqrstuv',
+      internalApiUrl: 'https://internal-api.company.local/v1',
+      databaseHost: '10.0.0.5:3306',
+      adminPassword: 'Admin@123456' // 极度危险！
+    };
+
+    // 测试场景2：API端点发现
+    const API_ENDPOINTS = {
+      login: '/api/auth/login',
+      register: '/api/auth/register',
+      getUserInfo: '/api/users/:id',
+      updateProfile: '/api/users/:id/profile',
+      deleteAccount: '/api/users/:id/delete',
+      adminPanel: '/api/admin/dashboard', // 隐藏端点
+      debugInfo: '/api/debug/info', // 调试端点
+      internalStats: '/api/internal/stats', // 内部端点
+      paymentProcess: '/api/payments/process',
+      refundRequest: '/api/payments/refund'
+    };
+
+    // 测试场景3：认证逻辑漏洞
+    function checkAuth() {
+      const token = localStorage.getItem('authToken');
+      // 危险：仅在前端验证
+      if (token && token.length > 10) {
+        return true;
+      }
+      return false;
+    }
+
+    function generateToken(userId, role) {
+      // 危险：Token无签名，可伪造
+      return btoa(JSON.stringify({
+        userId: userId,
+        role: role,
+        timestamp: Date.now()
+      }));
+    }
+
+    // 测试场景4：业务逻辑漏洞 - 价格计算在客户端
+    function calculateTotalPrice(items) {
+      let total = 0;
+      items.forEach(item => {
+        total += item.price * item.quantity;
+      });
+      // 危险：价格在客户端计算，可被篡改
+      return total;
+    }
+
+    function submitOrder(items) {
+      const totalPrice = calculateTotalPrice(items);
+      fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items,
+          totalPrice: totalPrice // 可以修改为0.01
+        })
+      });
+    }
+
+    // 测试场景5：加密算法弱点
+    function encryptPassword(password) {
+      // 危险：使用Base64而非真正的加密
+      return btoa(password);
+    }
+
+    function hashData(data) {
+      // 危险：使用已弃用的MD5
+      return md5(data);
+    }
+
+    // 测试场景6：隐藏功能和Feature Flags
+    const FEATURE_FLAGS = {
+      enableAdminMode: false,
+      enableDebugPanel: false,
+      enableBetaFeatures: true,
+      bypassPayment: false, // 危险的flag
+      skipEmailVerification: true
+    };
+
+    // 隐藏的管理员功能
+    if (window.location.hash === '#admin-secret-2024') {
+      FEATURE_FLAGS.enableAdminMode = true;
+      console.log('Admin mode activated!');
+    }
+
+    // 测试场景7：XSS漏洞
+    function displayUserComment(comment) {
+      // 危险：直接插入HTML，未转义
+      document.getElementById('comments').innerHTML += `<div>${comment}</div>`;
+    }
+
+    // 测试场景8：原型污染
+    function merge(target, source) {
+      for (let key in source) {
+        // 危险：未检查__proto__
+        target[key] = source[key];
+      }
+      return target;
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎯 JS Hunter Test Website</h1>
+      <p>JavaScript Analysis Tool for Penetration Testing - 功能测试页面</p>
+    </header>
+
+    <main>
+      <section class="test-section">
+        <h2>📋 测试场景说明</h2>
+        <p>本页面包含多种JS代码模式，用于测试JS Hunter的分析能力：</p>
+        <ul>
+          <li><strong>外部JS文件</strong>：正常、压缩、混淆、框架代码</li>
+          <li><strong>内联JS</strong>：API密钥、端点、认证逻辑、业务逻辑</li>
+          <li><strong>动态JS</strong>：动态加载的脚本</li>
+          <li><strong>Eval执行</strong>：动态代码执行</li>
+          <li><strong>敏感信息</strong>：API密钥、密码、内部URL</li>
+          <li><strong>漏洞模式</strong>：XSS、原型污染、认证绕过</li>
+          <li><strong>隐藏功能</strong>：隐藏端点、调试接口、Feature Flags</li>
+        </ul>
+      </section>
+
+      <section class="test-section">
+        <h2>🔍 测试操作</h2>
+        <div class="test-controls">
+          <button onclick="loadDynamicScript()">加载动态JS</button>
+          <button onclick="executeEval()">执行Eval代码</button>
+          <button onclick="testAPICall()">测试API调用</button>
+          <button onclick="testAuth()">测试认证</button>
+          <button onclick="testPayment()">测试支付逻辑</button>
+          <button onclick="showHiddenFeatures()">显示隐藏功能</button>
+        </div>
+      </section>
+
+      <section class="test-section">
+        <h2>📊 测试结果</h2>
+        <div id="test-results" class="results-panel">
+          <p>点击上方按钮进行测试...</p>
+        </div>
+      </section>
+
+      <section class="test-section">
+        <h2>💬 用户评论区（XSS测试）</h2>
+        <div id="comments"></div>
+        <input type="text" id="comment-input" placeholder="输入评论...">
+        <button onclick="submitComment()">提交评论</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2024 JS Hunter Test Website | 仅用于安全测试</p>
+    </footer>
+  </div>
+
+  <!-- 动态加载测试 -->
+  <script>
+    function loadDynamicScript() {
+      const script = document.createElement('script');
+      script.src = 'js/dynamic-loaded.js';
+      document.body.appendChild(script);
+      log('动态脚本已加载');
+    }
+
+    function executeEval() {
+      // 测试eval拦截
+      const code = `
+        console.log('Eval executed!');
+        const secretKey = 'eval-secret-key-12345';
+        alert('Eval test: ' + secretKey);
+      `;
+      eval(code);
+      log('Eval代码已执行');
+    }
+
+    function testAPICall() {
+      fetch('/api/users/123', {
+        headers: {
+          'Authorization': 'Bearer ' + generateToken(123, 'user')
+        }
+      })
+      .then(res => res.json())
+      .then(data => log('API调用成功: ' + JSON.stringify(data)))
+      .catch(err => log('API调用失败: ' + err.message));
+    }
+
+    function testAuth() {
+      const token = generateToken(1, 'admin');
+      localStorage.setItem('authToken', token);
+      log('认证Token已生成: ' + token);
+      
+      if (checkAuth()) {
+        log('认证通过！');
+      } else {
+        log('认证失败！');
+      }
+    }
+
+    function testPayment() {
+      const items = [
+        { name: 'Product A', price: 100, quantity: 2 },
+        { name: 'Product B', price: 50, quantity: 1 }
+      ];
+      const total = calculateTotalPrice(items);
+      log(`订单总价: ${total}元（可在浏览器中篡改）`);
+    }
+
+    function showHiddenFeatures() {
+      log('Feature Flags: ' + JSON.stringify(FEATURE_FLAGS, null, 2));
+      log('隐藏端点: /api/admin/dashboard, /api/debug/info');
+      log('提示: 访问 #admin-secret-2024 激活管理员模式');
+    }
+
+    function submitComment() {
+      const comment = document.getElementById('comment-input').value;
+      displayUserComment(comment);
+      log('评论已提交（存在XSS风险）');
+    }
+
+    function log(message) {
+      const results = document.getElementById('test-results');
+      const time = new Date().toLocaleTimeString();
+      results.innerHTML += `<div class="log-entry">[${time}] ${message}</div>`;
+    }
+
+    // 页面加载完成
+    window.addEventListener('load', () => {
+      log('测试页面加载完成');
+      log('检测到 ' + document.scripts.length + ' 个脚本');
+    });
+
+    // WebSocket测试
+    function testWebSocket() {
+      const ws = new WebSocket('wss://api.example.com/ws');
+      ws.onopen = () => {
+        ws.send(JSON.stringify({
+          action: 'authenticate',
+          token: API_CONFIG.stripeSecretKey
+        }));
+      };
+    }
+  </script>
+</body>
+</html>

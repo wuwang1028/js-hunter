@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Hunter - 设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>JS Hunter 设置</h1>
+        <p class="subtitle">配置AI分析和数据收集选项</p>
+      </header>
+
+      <main class="main">
+        <!-- API配置 -->
+        <section class="section">
+          <h2 class="section-title">API配置</h2>
+          <div class="form-group">
+            <label for="geminiKey">Gemini API Key (推荐)</label>
+            <input
+              type="password"
+              id="geminiKey"
+              placeholder="输入Gemini API Key"
+            />
+            <small>2M上下文，免费额度充足。<a href="https://aistudio.google.com/app/apikey" target="_blank">获取API Key</a></small>
+          </div>
+
+          <div class="form-group">
+            <label for="deepseekKey">DeepSeek API Key</label>
+            <input
+              type="password"
+              id="deepseekKey"
+              placeholder="输入DeepSeek API Key"
+            />
+            <small>128K上下文，极低成本。<a href="https://platform.deepseek.com" target="_blank">获取API Key</a></small>
+          </div>
+
+          <div class="form-group">
+            <label for="openaiKey">OpenAI API Key</label>
+            <input
+              type="password"
+              id="openaiKey"
+              placeholder="输入OpenAI API Key"
+            />
+            <small>1M上下文，高性能。<a href="https://platform.openai.com/api-keys" target="_blank">获取API Key</a></small>
+          </div>
+
+          <div class="form-group">
+            <label for="customEndpoint">自定义API端点</label>
+            <input
+              type="text"
+              id="customEndpoint"
+              placeholder="https://api.example.com/v1/chat/completions"
+            />
+            <small>支持OpenAI兼容格式的API</small>
+          </div>
+
+          <div class="form-group">
+            <label for="customKey">自定义API Key</label>
+            <input
+              type="password"
+              id="customKey"
+              placeholder="输入自定义API Key"
+            />
+          </div>
+        </section>
+
+        <!-- 分析设置 -->
+        <section class="section">
+          <h2 class="section-title">分析设置</h2>
+
+          <div class="form-group">
+            <label for="defaultModel">默认AI模型</label>
+            <select id="defaultModel">
+              <option value="gemini-2.5-flash">Gemini 2.5 Flash (推荐)</option>
+              <option value="deepseek-v3">DeepSeek V3</option>
+              <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>默认分析场景</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" value="api-discovery" checked />
+                API接口发现
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="secret-scan" checked />
+                敏感信息扫描
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="vulnerability-scan" checked />
+                漏洞模式检测
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="auth-analysis" />
+                认证逻辑分析
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="crypto-detection" />
+                加密算法识别
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="business-logic" />
+                业务逻辑分析
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" value="hidden-features" />
+                隐藏功能发现
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="autoAnalyze" />
+              自动分析新收集的JS文件
+            </label>
+          </div>
+        </section>
+
+        <!-- 收集设置 -->
+        <section class="section">
+          <h2 class="section-title">收集设置</h2>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="autoCollect" checked />
+              自动收集JS文件
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="collectInline" checked />
+              收集内联JS
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="collectDynamic" checked />
+              收集动态JS
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="maxFileSize">最大文件大小 (MB)</label>
+            <input
+              type="number"
+              id="maxFileSize"
+              value="10"
+              min="1"
+              max="100"
+            />
+          </div>
+        </section>
+
+        <!-- 存储设置 -->
+        <section class="section">
+          <h2 class="section-title">存储设置</h2>
+
+          <div class="form-group">
+            <label for="maxStorage">最大存储空间 (MB)</label>
+            <input
+              type="number"
+              id="maxStorage"
+              value="1024"
+              min="100"
+              max="10240"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="autoCleanup" checked />
+              自动清理过期数据
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="retentionDays">数据保留天数</label>
+            <input
+              type="number"
+              id="retentionDays"
+              value="30"
+              min="1"
+              max="365"
+            />
+          </div>
+        </section>
+
+        <!-- UI设置 -->
+        <section class="section">
+          <h2 class="section-title">界面设置</h2>
+
+          <div class="form-group">
+            <label for="theme">主题</label>
+            <select id="theme">
+              <option value="dark">深色</option>
+              <option value="light">浅色</option>
+              <option value="auto">跟随系统</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="language">语言</label>
+            <select id="language">
+              <option value="zh">简体中文</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <button class="btn btn-secondary" id="clearDataBtn">清空所有数据</button>
+        <div class="footer-actions">
+          <button class="btn btn-outline" id="resetBtn">重置</button>
+          <button class="btn btn-primary" id="saveBtn">保存设置</button>
+        </div>
+      </footer>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

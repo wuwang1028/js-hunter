@@ -109,6 +109,8 @@ temp/
 desktop-app/release/
 extension/**/*.js
 !extension/content/injected.js
+!extension/content/content-script.js
+!extension/background/service-worker.js
 !extension/popup/popup.js
 !extension/devtools/devtools.js
 !extension/devtools/panel.js
